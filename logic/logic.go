@@ -11,14 +11,16 @@ const (
 	DirectionRight
 )
 
-type Grid = [4][4]int
+type DataGrid = [4][4]int
+type ViewGrid = [4][4]string
 
 type Logic struct {
-	grid Grid
+	grid  DataGrid
+	score int
 }
 
 func New() *Logic {
-	grid := Grid{
+	grid := DataGrid{
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -27,6 +29,7 @@ func New() *Logic {
 
 	l := &Logic{
 		grid,
+		0,
 	}
 
 	l.generateNewPiece()
@@ -49,7 +52,7 @@ loop:
 }
 
 func (l *Logic) IsGameOver() bool {
-	return l.hasLegalMoves() || l.hasEmptySpots()
+	return !l.hasLegalMoves() && !l.hasEmptySpots()
 }
 
 func (l *Logic) hasLegalMoves() bool {
@@ -122,15 +125,21 @@ outerLoop:
 }
 
 func (l *Logic) moveGeneral(ca int, ra int) {
+	l.moveToEmpty(ca, ra)
+	a := [4][4]bool{}
 	for c := range l.grid {
 		for r := range l.grid[c] {
-			if l.grid[c][r] != 0 {
+			if l.grid[c][r] != 0 && !a[c][r] {
 				if ra != 0 && r+ra >= 0 && r+ra < 4 && l.grid[c][r] == l.grid[c][r+ra] {
 					l.grid[c][r+ra] = l.grid[c][r] * 2
 					l.grid[c][r] = 0
+					l.score += l.grid[c][r+ra]
+					a[c][r+ra] = true
 				} else if ca != 0 && c+ca >= 0 && c+ca < 4 && l.grid[c][r] == l.grid[c+ca][r] {
 					l.grid[c+ca][r] = l.grid[c][r] * 2
 					l.grid[c][r] = 0
+					l.score += l.grid[c+ca][r]
+					a[c+ca][r] = true
 				}
 			}
 		}
@@ -155,15 +164,27 @@ func (l *Logic) MoveAndGenerate(direction Direction) {
 	l.Display()
 }
 
-func (l *Logic) Data() Grid {
-	return l.grid
+func (l *Logic) View() ViewGrid {
+	grid := ViewGrid{}
+	for c := range l.grid {
+		for r := range l.grid[c] {
+			grid[c][r] = fmt.Sprintf("%d", l.grid[c][r])
+		}
+	}
+	return grid
+}
+
+func (l *Logic) Score() string {
+	return fmt.Sprintf("Score: %d", l.score)
 }
 
 func (l *Logic) Display() {
+	fmt.Printf("Score: %d\n=======\n", l.score)
 	for c := range l.grid {
 		for r := range l.grid[c] {
 			fmt.Printf("%d ", l.grid[c][r])
 		}
-		fmt.Print("\n")
+		fmt.Println("")
 	}
+	fmt.Println("=======")
 }
