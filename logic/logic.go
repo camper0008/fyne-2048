@@ -161,7 +161,6 @@ func (l *Logic) MoveAndGenerate(direction Direction) {
 	if l.hasEmptySpots() {
 		l.generateNewPiece()
 	}
-	l.Display()
 }
 
 func (l *Logic) View() ViewGrid {
@@ -174,11 +173,11 @@ func (l *Logic) View() ViewGrid {
 	return grid
 }
 
-func (l *Logic) Score() string {
+func (l *Logic) FormattedScore() string {
 	return fmt.Sprintf("Score: %d", l.score)
 }
 
-func (l *Logic) Display() {
+func (l *Logic) DebugDisplay() {
 	fmt.Printf("Score: %d\n=======\n", l.score)
 	for c := range l.grid {
 		for r := range l.grid[c] {

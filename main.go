@@ -29,9 +29,7 @@ func generateBoundContainer(data logic.ViewGrid, window fyne.Window) (*fyne.Cont
 		for r := range data[c] {
 			bindings[c*4+r] = binding.NewString()
 			_ = bindings[c*4+r].Set(data[c][r])
-			label := widget.NewLabelWithStyle("", fyne.TextAlignCenter)
-			label.Bind(binding.String(bindings[c*4+r]))
-			objects[c*4+r] = container.NewCenter(label)
+			objects[c*4+r] = container.NewCenter(widget.NewLabelWithData(bindings[c*4+r]))
 		}
 	}
 
@@ -46,7 +44,6 @@ func main() {
 	w := a.NewWindow("2048")
 	c, b := generateBoundContainer(l.View(), w)
 	scoreBinding := binding.NewString()
-	scoreBinding.Set(l.Score())
 	w.SetContent(container.NewVBox(container.NewCenter(widget.NewLabelWithData(scoreBinding)), c))
 	w.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
 		if l.IsGameOver() {
@@ -67,7 +64,7 @@ func main() {
 			l.MoveAndGenerate(logic.DirectionRight)
 		}
 		updateBindings(l.View(), b)
-		scoreBinding.Set(l.Score())
+		scoreBinding.Set(l.FormattedScore())
 	})
 	w.Resize(fyne.NewSize(w.Canvas().Size().Width+25, w.Canvas().Size().Height))
 	w.CenterOnScreen()
