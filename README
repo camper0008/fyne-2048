@@ -1,0 +1,7 @@
+fyne-2048
+=========
+2048 recreated in fyne
+* game logic module is independent
+* the code is little bit spaghetti, but it's readable enough hopefully
+* dependencies include golang and others, please read:
+  https://developer.fyne.io/started/
