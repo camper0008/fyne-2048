@@ -21,10 +21,10 @@ type Logic struct {
 
 func New() *Logic {
 	grid := DataGrid{
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
+		{32, 0, 0, 0},
+		{32, 0, 0, 0},
+		{32, 0, 0, 0},
+		{32, 0, 0, 0},
 	}
 
 	l := &Logic{
@@ -168,6 +168,16 @@ func (l *Logic) View() ViewGrid {
 	for c := range l.grid {
 		for r := range l.grid[c] {
 			grid[c][r] = fmt.Sprintf("%d", l.grid[c][r])
+		}
+	}
+	return grid
+}
+
+func (l *Logic) Data() DataGrid {
+	grid := DataGrid{}
+	for c := range l.grid {
+		for r := range l.grid[c] {
+			grid[c][r] = l.grid[c][r]
 		}
 	}
 	return grid
