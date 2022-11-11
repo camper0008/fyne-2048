@@ -38,7 +38,7 @@ func colorsFromCellValue(value int) (color.Color, color.Color) {
 		}
 		return color.RGBA{R: 255, G: v, B: v}, textColor
 	}
-	return color.RGBA{}, color.RGBA{}
+	return color.RGBA{R: 255, G: 255, B: 255}, color.RGBA{R: 0, G: 0, B: 0}
 }
 
 func updateCells(data logic.DataGrid, cells *[]cell) {
