@@ -27,18 +27,38 @@ func colorsFromCellValue(value int) (color.Color, color.Color) {
 	if value == 0 {
 		return color.RGBA{}, color.RGBA{}
 	}
-	if value <= 64 {
+	if value <= int(math.Pow(2, 5)) {
 		x := math.Log2(float64(value))
-		v := uint8(255 - x*(255/6))
+		v := uint8(150 - x*(150/5))
 		var textColor color.Color
-		if v < 127 {
-			textColor = color.RGBA{R: 1, G: 1, B: 1, A: 255}
+		if v > 127 {
+			textColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
 		} else {
-			textColor = color.RGBA{R: 200, G: 255, B: 255, A: 255}
+			textColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 		}
 		return color.RGBA{R: 255, G: v, B: v}, textColor
+	} else if value <= int(math.Pow(2, 10)) {
+		x := math.Log2(float64(value)) / 2
+		v := uint8(150 - x*(150/5))
+		var textColor color.Color
+		if v > 127 {
+			textColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
+		} else {
+			textColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+		}
+		return color.RGBA{R: v, G: 255, B: v}, textColor
+	} else if value <= int(math.Pow(2, 15)) {
+		x := math.Log2(float64(value)) / 3
+		v := uint8(150 - x*(150/5))
+		var textColor color.Color
+		if v > 127 {
+			textColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
+		} else {
+			textColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+		}
+		return color.RGBA{R: v, G: v, B: 255}, textColor
 	}
-	return color.RGBA{R: 255, G: 255, B: 255}, color.RGBA{R: 0, G: 0, B: 0}
+	return color.RGBA{}, color.RGBA{255, 255, 255, 255}
 }
 
 func updateCells(data logic.DataGrid, cells *[]cell) {
@@ -61,6 +81,7 @@ func generateBoundContainer(data logic.ViewGrid, window fyne.Window) (*fyne.Cont
 	for c := range data {
 		for r := range data[c] {
 			label := &canvas.Text{}
+			label.TextStyle = fyne.TextStyle{Bold: true}
 			background := &canvas.Rectangle{}
 			background.SetMinSize(fyne.Size{50, 50})
 			cells[c*4+r] = cell{
